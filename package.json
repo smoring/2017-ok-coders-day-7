@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/smoring/2017-OK-Coders-Day-6#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "mongoose": "^4.9.6",
     "restify": "^4.3.0"
   }
