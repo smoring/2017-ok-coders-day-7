@@ -74,6 +74,32 @@ exports.read = function(req, res, next){
 	});
 }
 
+exports.verify = function(req, res, next){
+	var token = req.header('authorization');
+
+	if(!token){
+		console.log("no authorization header value");
+		res.json(404, {status:"failed",reason:"user needs to login"});
+	} else {
+
+		jwt.verify(token, config.secret, function(err,decoded){
+			if(err){
+				console.log(err);
+				res.json(404, {status:"failed",reason:"JWT is not valid"});
+			} else {
+				Auth.findOne({_id: decoded.user, is_active:true}).exec(function(err2,data){
+					if(err2){
+						console.log(err2);
+						res.json(404, {status:"failed",reason:"Not a valid user"});
+					} else {
+						return next();
+					}
+				});
+			}
+		});
+	}
+}
+
 
 
 
