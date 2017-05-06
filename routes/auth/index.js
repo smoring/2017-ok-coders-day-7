@@ -1,6 +1,19 @@
 var Auth = require('../../models/auth');
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var config = require('../../config.js')();
+
 const saltRounds = 2;
+
+var getToken = function(user){
+	var date = ( Date.now() / 1000 );
+	var exp = date + (60 * 120);
+	return jwt.sign({
+		user: user._id,
+		iat: date,
+		exp: exp
+	}, config.secret);
+}
 
 exports.create = function(req, res, next){
 	var auth = new Auth();
@@ -55,10 +68,10 @@ exports.read = function(req, res, next){
 				res.json(400,{status: "failed", reason: "Invalid Password"});
 				return next();
 			}
-			res.json(200,{status:"success"});
+			res.json(200,{status:"success", token: getToken(data)});
 			return next();
-		})
-	})
+		});
+	});
 }
 
 
